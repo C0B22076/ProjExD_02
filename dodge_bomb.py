@@ -1,6 +1,6 @@
 import random
 import sys
-
+import time
 import pygame as pg
 
 # 移動方向の設定
@@ -34,6 +34,8 @@ def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((1600, 900))
     clock = pg.time.Clock()
+    font1 = pg.font.SysFont("UDデジタル教科書体", 400)  # フォントの設定
+    text1 = font1.render("Game Over", True, (255, 0, 0))  # テキストの設定
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
@@ -70,8 +72,11 @@ def main():
             vx *= -1
         if not tate:  # 縦方向にはみ出ていたら　練習５
             vy *= -1
-        screen.blit(bb_img, bb_rct)  # 練習３
-        if kk_rct.colliderect(bb_rct):  # 練習６
+        screen.blit(bb_img, bb_rct)  
+        if kk_rct.colliderect(bb_rct):  # 衝突処理
+            screen.blit(text1, (40,300))  # ゲームオーバーテキスト表示
+            pg.display.update()
+            time.sleep(4)
             return
         pg.display.update()
         clock.tick(1000)
