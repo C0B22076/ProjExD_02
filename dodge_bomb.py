@@ -3,7 +3,7 @@ import sys
 
 import pygame as pg
 
-# 練習４
+# 移動方向の設定
 delta = {
         pg.K_UP: (0, -1),
         pg.K_DOWN: (0, +1),
@@ -11,7 +11,10 @@ delta = {
         pg.K_RIGHT: (+1, 0),
         }
 
-# 練習５
+
+accs = [a for a in range(1, 11)]
+
+# 画面判定
 def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
     オブジェクトが画面内or画面外を判定し、真理値タプルを返す関数
@@ -27,7 +30,6 @@ def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
 
 
-
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((1600, 900))
@@ -37,7 +39,6 @@ def main():
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     kk_rct = kk_img.get_rect()  # 練習４
     kk_rct.center = 900, 400  # 練習４
-
     bb_img = pg.Surface((20,20))  # 練習１
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 練習１
     bb_img.set_colorkey((0, 0, 0))  # 練習１
@@ -47,14 +48,11 @@ def main():
     bb_rct = bb_img.get_rect()  # 練習３
     bb_rct.center = x, y  # 練習３
     tmr = 0
-
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return 0
-
         tmr += 1
-
         key_lst = pg.key.get_pressed()  # 練習４
         for k, mv in delta.items():
             if key_lst[k]:
@@ -63,10 +61,10 @@ def main():
             for k, mv in delta.items():
                 if key_lst[k]:
                     kk_rct.move_ip(-mv[0], -mv[1])
-
+        avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)  # 練習４
-        bb_rct.move_ip(vx, vy)  # 練習３
+        bb_rct.move_ip(avx, avy)  # 練習３
         yoko, tate = check_bound(screen.get_rect(), bb_rct)
         if not yoko:  # 横方向にはみ出ていたら　練習５
             vx *= -1
@@ -75,7 +73,6 @@ def main():
         screen.blit(bb_img, bb_rct)  # 練習３
         if kk_rct.colliderect(bb_rct):  # 練習６
             return
-
         pg.display.update()
         clock.tick(1000)
 
